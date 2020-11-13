@@ -6,7 +6,8 @@ Before fiddling with anything, read through and follow the [Setup](#Setup).
 Should you not know how to run the individual programs, see [Running an application](#Running_an_application).
 
 ## Setup
-Regardless whether you've downloaded this kit for the first time or you've downloaded recent updates to it, always make sure to install all the dependencies.
+* To be able to use this kit, you'll need to install the latest version of [Python](https://www.python.org/).
+* Regardless of whether you've downloaded this kit for the first time or you've downloaded recent updates to it, always make sure to [install all the dependencies](#Installing_dependencies).
 
 ### Installing dependencies
 1. Navigate to the top directory of this repository on your computer.
