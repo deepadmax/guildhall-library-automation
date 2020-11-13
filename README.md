@@ -17,8 +17,6 @@ Should you not know how to run the individual programs, see [Running an applicat
 
 
 ## Applications
-You run an application by executing the `main.py` file its folder.
-
 ### List of all applications
 * [Find overdue users](/find_overdue_users)
 
