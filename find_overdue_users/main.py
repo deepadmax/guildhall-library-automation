@@ -20,7 +20,7 @@ print("""
 
 * Leave the input field empty to use the default value.
 
-* If a full path is not given, it will be relative to where this program is located.
+* If a full path is not given, it will be relative to wherefrom this program is executed.
 [/bright_yellow]""".lstrip())
 
 
@@ -36,8 +36,18 @@ def input_path(prefix='', default=None, check=True):
         if path == '':
             path = default
 
+
         # Replace backslashes with forward slashes
         path = path.replace('\\', '/')
+
+        # Strip of redundant spaces
+        path = path.strip()
+        
+        # Remove surrounding quotes
+        if f'{path[0]}{path[-1]}' in ['""', "''"]:
+            path = path[1:-1]
+        
+
         path = Path(path)
 
         if not check:
@@ -84,20 +94,20 @@ print("""
 [b]Where would you like to save the output file?[/b]
 [i]
 - Make sure the directory already exists.
-- File should be suffixed with [b]'.xlsx'[/b]
+- Filename should be suffixed with [b]'.xlsx'[/b]
 [/i]""")
 OUTPUT_PATH = input_path(default='output.xlsx', check=False)
 
 
 # Load spreadsheet of names & IDs to match
-print_busy('\n\nReading names & IDs from user spreadsheet')
+print_busy('\n\nReading names & IDs from spreadsheet')
 
 df = pd.read_excel(USERS_PATH)
 df = df.to_records(index=False)
 
 id_names_lookup = {
-    _id: full_name
-    for full_name, _id in df
+    _id: name
+    for name, _id in df
 }
 
 
@@ -110,7 +120,7 @@ with open(REPORT_PATH) as f:
     text = f.read()
     match = re.findall('\s*(.+, .+)[\n\s]+id:([\w\d-]+)\s+((?:.|\n)+?Charges)', text)
 
-    for full_name, _id, extra in match:
+    for name, _id, extra in match:
         if extra.count('reason:OVERDUE'):
             overdue_ids.add(int(_id))
 
@@ -128,10 +138,10 @@ overdue_entries = [
 # Save result to spreadsheet
 print_busy('Saving to Excel Spreadsheet')
 
-df = pd.DataFrame(overdue_entries, columns=['Full Name', 'ID'])
+df = pd.DataFrame(overdue_entries, columns=['Name', 'ID'])
 df.to_excel(OUTPUT_PATH, index=None, header=True)
 
 
 # Success message
-print('\n[bright_yellow]Successfully generated table![/bright_yellow]')
+print('\nSuccessfully generated table!')
 input() # Leave window open
