@@ -118,7 +118,7 @@ with open(REPORT_PATH) as f:
 # Find which IDs exist in both sets
 print_busy('Comparing users to overdue entries')
 
-overlap = overdue_ids.intersection(id_names_lookup.items())
+overlap = overdue_ids.intersection(id_names_lookup.keys())
 overdue_entries = [
     (id_names_lookup[_id], _id)
     for _id in overlap
