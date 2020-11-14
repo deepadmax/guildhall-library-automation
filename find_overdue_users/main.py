@@ -118,7 +118,7 @@ overdue_ids = set()
 
 with open(REPORT_PATH) as f:
     text = f.read()
-    match = re.findall('\s*(.+, .+)[\n\s]+id:([\w\d-]+)\s+((?:.|\n)+?Charges)', text)
+    match = re.findall(r'\s*(.+,\s.+)[\n\s]+id:([\w\d-]+)\s+((?:.|\n)+?Charges)', text)
 
     for name, _id, extra in match:
         if extra.count('reason:OVERDUE'):
