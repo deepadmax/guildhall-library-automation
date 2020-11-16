@@ -13,7 +13,7 @@ print("""
 ┌──────────────────────┐
 │ FIND OVERDUE ENTRIES │
 └──────────────────────┘
-[bright_yellow]
+[gold1]
 [b][ TIPS ][/b]
 
 * You can click and drag a file onto the input field to copy its path.
@@ -21,7 +21,7 @@ print("""
 * Leave the input field empty to use the default value.
 
 * If a full path is not given, it will be relative to wherefrom this program is executed.
-[/bright_yellow]""".lstrip())
+[/gold1]""".lstrip())
 
 
 def input_path(prefix='', default=None, check=True):
@@ -29,7 +29,7 @@ def input_path(prefix='', default=None, check=True):
 
     while True:
         if default:
-            print(f"Default: '{default}' {prefix}", end='')
+            print(f"Default: [spring_green3]'{default}'[/spring_green3] {prefix}", end='')
 
         path = input('> ')
 
@@ -54,7 +54,7 @@ def input_path(prefix='', default=None, check=True):
             return path
 
         if os.path.isfile(path):
-            print('[blue]File found[/blue]\n')
+            print('[i]File found.[/i]\n')
             return path
         
         if not check:
@@ -65,17 +65,20 @@ def input_path(prefix='', default=None, check=True):
 
 
 def print_busy(activity):
-    print(f'[bright_cyan]{activity}...[/bright_cyan]')
+    print(f'[deep_sky_blue1]{activity}...[/deep_sky_blue1]')
+
+def failure(string):
+    print(f'[i][bright_red]Error: {string}[/bright_red][/i]')
+    input()
+    exit()
 
 
 # Input in which file the list of people and their IDs are located
 print("""
-[b]Where is your Names & IDs spreadsheet located?[/b]
+[b]Where is your ID spreadsheet located?[/b]
 [i]
-- Recommended file format: [bright_blue]XLSX (Excel Spreadsheet Extended)[/bright_blue]
-- Table should have two columns, [bright_blue]full name[/bright_blue] & [bright_blue]library ID[/bright_blue], with headers included.
-- Full names must be formatted just as they are in the report.
-  Example: 'Wimbleton, Rose (Ms)'
+- Recommended file format: [deep_sky_blue1]XLSX (Excel Spreadsheet Extended)[/deep_sky_blue1]
+- Table must have a column labelled [deep_sky_blue1]ID[/deep_sky_blue1], under which the library IDs of all users whom you wish to check are listed.
 [/i]""")
 USERS_PATH = input_path(default='examples/users.xlsx')
 
@@ -84,7 +87,7 @@ USERS_PATH = input_path(default='examples/users.xlsx')
 print("""
 [b]Where is your user report located?[/b]
 [i]
-- Recommended file format: [bright_blue]TXT (Plain Text Document)[/bright_blue]
+- Recommended file format: [deep_sky_blue1]TXT (Plain Text Document)[/deep_sky_blue1]
 [/i]""")
 REPORT_PATH = input_path(default='examples/report.txt')
 
@@ -94,43 +97,43 @@ print("""
 [b]Where would you like to save the output file?[/b]
 [i]
 - Make sure the directory already exists.
-- Filename should be suffixed with [b]'.xlsx'[/b]
+- Filename should be suffixed with [b][spring_green3]'.xlsx'[/spring_green3][/b]
 [/i]""")
 OUTPUT_PATH = input_path(default='output.xlsx', check=False)
 
 
 # Load spreadsheet of names & IDs to match
-print_busy('\n\nReading names & IDs from spreadsheet')
+print_busy('\n\nReading IDs from spreadsheet')
 
 df = pd.read_excel(USERS_PATH)
-df = df.to_records(index=False)
 
-id_names_lookup = {
-    _id: name
-    for name, _id in df
-}
+# Find column labeled ID with any capitalization
+if 'ID' not in df.columns:
+    failure('Missing ID column in your spreadsheet.')
+
+lookup_ids = [int(x) for x in df['ID']]
 
 
 # Extract users with overdue entries in report
 print_busy('Extracting relevant information from user report')
 
-overdue_ids = set()
+report_lookup = {}
 
 with open(REPORT_PATH) as f:
     text = f.read()
     match = re.findall(r'\s*(.+,\s.+)[\n\s]+id:([\w\d-]+)\s+((?:.|\n)+?Charges)', text)
 
     for name, _id, extra in match:
-        if extra.count('reason:OVERDUE'):
-            overdue_ids.add(int(_id))
+        report_lookup[int(_id)] = name
 
+report_ids = set(report_lookup.keys())
 
 # Find which IDs exist in both sets
 print_busy('Comparing users to overdue entries')
 
-overlap = overdue_ids.intersection(id_names_lookup.keys())
+overlap = report_ids.intersection(lookup_ids)
 overdue_entries = [
-    (id_names_lookup[_id], _id)
+    (report_lookup[_id], _id)
     for _id in overlap
 ]
 
