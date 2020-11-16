@@ -111,7 +111,7 @@ df = pd.read_excel(USERS_PATH)
 if 'ID' not in df.columns:
     failure('Missing ID column in your spreadsheet.')
 
-lookup_ids = [int(x) for x in df['ID']]
+lookup_ids = df['ID'][:]
 
 
 # Extract users with overdue entries in report
@@ -124,7 +124,7 @@ with open(REPORT_PATH) as f:
     match = re.findall(r'\s*(.+,\s.+)[\n\s]+id:([\w\d-]+)\s+((?:.|\n)+?Charges)', text)
 
     for name, _id, extra in match:
-        report_lookup[int(_id)] = name
+        report_lookup[_id] = name
 
 report_ids = set(report_lookup.keys())
 
