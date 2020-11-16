@@ -6,14 +6,14 @@ Before fiddling with anything, read through and follow the [Setup](#Setup).
 Should you not know how to run the individual programs, see [Running an application](#Running_an_application).
 
 ## Setup
-* To be able to use this kit, you'll need to install the latest version of [Python](https://www.python.org/).
+* To be able to use this kit, you'll need to install the latest version (3.9 or higher) of [Python](https://www.python.org/).
 * Regardless of whether you've downloaded this kit for the first time or you've downloaded recent updates to it, always make sure to [install all the dependencies](#Installing_dependencies).
 
 ### Installing dependencies
 1. Navigate to the top directory of this repository on your computer.
 2. Hold Shift and right-click in the file explorer.
 3. Select `Open PowerShell Here` or `Open command window here`
-4. In the command line, type `pip install -r requirements.txt` and press Enter.
+4. In the command line, type `python -m pip install -r requirements.txt` and press Enter.
 
 
 ## Applications
